@@ -35,6 +35,10 @@ server.use(restifyPlugins.jsonBodyParser({ mapParams: true }));
 server.use(restifyPlugins.acceptParser(server.acceptable));
 server.use(restifyPlugins.queryParser({ mapParams: true }));
 server.use(restifyPlugins.fullResponse());
+server.use((req,res,next)=>{
+    console.log("call middle ware");
+    next();
+})
 
 server.listen(config.port, () => {
     mongoose.Promise = global.Promise;

@@ -10,12 +10,17 @@ let accountRoutes = (server) => {
             );
         }
 
-        let user = new User(_.pick(req.body,["userName",'password']));
-      
-        
+        let body = _.pick(req.body, ["userName", 'password']);
 
+
+        User.findByCredentials(body.userName, body.password)
+            .then((user) => {
+                res.send(user);
+            }).catch((err) => {
+                res.status(400).send();
+            })
         // user.save().then(() => {
-        //     return user.generateAuthToken();
+        //     return user.generateAuthToken();a
         // }).then((token) => {
         //     res.header('x-auth', token);
         //     res.send(user);
