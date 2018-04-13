@@ -2,40 +2,80 @@
 let mongoose = require('mongoose');
 let mongooseStringQuery = require("mongoose-string-query");
 let timestamps = require('mongoose-timestamp');
+let validator = require("validator");
+let jwt = require("jsonwebtoken");
+const _ = require('lodash');
 
 const UserSchema = new mongoose.Schema({
-    userName:{
-        type:String,
+    userName: {
+        type: String,
         required: true,
-        trim:true
+        trim: true
     },
-    email:{
-        type:String,
-        required:true,
-    },
-    firstName:{
+    email: {
         type: String,
-        trim:true
+        required: true,
+        trim: true,
+        minlength: 1,
+        unique: true,
+        validate: {
+            validator: validator.isEmail,
+            message: '{VALUE} is not a valid email'
+        }
     },
-    lastName:{
+    firstName: {
         type: String,
-        trim:true
+        trim: true
     },
-    phoneNo:{
+    lastName: {
+        type: String,
+        trim: true
+    },
+    phoneNo: {
         type: String
     },
-    UserType:{
+    userType: {
         type: String,
-        required:true
+        required: true
     },
-    isApproved:{
-        type:boolean
+    isApproved: {
+        type: Boolean
     },
-    "password":{
-        type:String,
-        required:true,
-    }
+    isAcitve: {
+        type: Boolean
+    },
+    "password": {
+        type: String,
+        required: true,
+        minlength: 6
+    },
+    tokens: [
+        {
+            access: {
+                type: String,
+                required: true
+            },
+            token: {
+                type: String,
+                required: true
+            }
+        }
+    ]
 });
+UserSchema.methods.toJSON = function(){
+    let user = this;
+    let userObject = user.toObject();
+    return _.pick(userObject,['_id','email']);
+}
+UserSchema.methods.generateAuthToken = function () {
+    let user = this;
+    let access = 'auth';
+    let token = jwt.sign({ _id: user._id.toHexString(), access }, 'dev123');
+    user.tokens = user.tokens.concat([{ access, token }]);
+    return user.save().then(() => {
+        return token;
+    })
+}
 UserSchema.plugin(timestamps);
 UserSchema.plugin(mongooseStringQuery);
-module.exports = mongoose.model('User',UserSchema);
+module.exports = mongoose.model('User', UserSchema);
