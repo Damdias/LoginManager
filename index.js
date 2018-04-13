@@ -36,7 +36,7 @@ server.use(restifyPlugins.acceptParser(server.acceptable));
 server.use(restifyPlugins.queryParser({ mapParams: true }));
 server.use(restifyPlugins.fullResponse());
 server.use((req,res,next)=>{
-    console.log("call middle ware");
+    console.log("call middle ware g");
     next();
 })
 
