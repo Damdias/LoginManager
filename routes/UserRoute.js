@@ -10,10 +10,9 @@ let userRoutes = (server) => {
             );
         }
 
-        let user = new User(_.pick(req.body,["userName",'email','firstName','lastName','phoneNo','userType','password']));
-        user.isActive = false;
-        user.isAprove = false;
-
+        let user = new User(_.pick(req.body, ["userName", 'email', 'firstName', 'lastName', 'phoneNo', 'userType', 'password']));
+        user.isAcitve = false;
+        user.isApproved = false;
         // user.save((err) => {
         //     if (err) {
         //         console.err(err);
@@ -34,6 +33,15 @@ let userRoutes = (server) => {
             return next(new errors.InternalError(e.message));
             next();
         });
+
+    });
+    server.get('/Users', (req, res, next) => {
+        User.find().then((users) => {
+            res.send(users);
+            next();
+        }).catch((err) => {
+            return next(new errors.InternalError(err));
+        })
 
     });
 }

@@ -101,6 +101,9 @@ UserSchema.statics.findByCredentials = function (email, password) {
         if (!user) {
             return Promise.reject();
         }
+        if(!user.isAcitve){
+            return Promise.reject("user is not active");
+        }
         return new Promise((resolve, reject) => {
             bcrypt.compare(password, user.password, (err, res) => {
                 if (res) {
