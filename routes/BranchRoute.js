@@ -1,6 +1,7 @@
 let errors = require("restify-errors");
 let Branch = require("../models/BranchModel");
 let _ = require("lodash");
+const Auth = require("../middleware/AuthMiddleware");
 
 let branchRoutes = (server) => {
     server.get('/branch/:id', (req, res, next) => {
@@ -15,7 +16,7 @@ let branchRoutes = (server) => {
             }
         });
     });
-    server.post('/branch', (req, res, next) => {
+    server.post('/branch', Auth, (req, res, next) => {
         if (!req.is('application/json')) {
             return next(
                 new errors.InvalidContentError("Expects 'applicaiton/json'")
