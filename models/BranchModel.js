@@ -1,6 +1,7 @@
 let mongoose = require('mongoose');
 let mongooseStringQuery = require("mongoose-string-query");
 let timestamps = require('mongoose-timestamp');
+let objectID = require("mongoose").Schema.objectID;
 
 
 const BranchSchema = new mongoose.Schema({
@@ -15,10 +16,14 @@ const BranchSchema = new mongoose.Schema({
     phoneNo: {
         type: String,
         minlength: 10,
+        trim:true
     },
     address: {
         type: String,
         trim: true
+    },
+    Supervior:{
+        type:objectID
     }
 });
 
