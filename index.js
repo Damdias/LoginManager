@@ -30,7 +30,10 @@ const server = restify.createServer({
     name: config.name,
     version: config.version
 });
-
+server.get("/",(req,res,next)=>{
+    res.send({"msg":"Server is working"});
+    next();
+})
 server.use(restifyPlugins.jsonBodyParser({ mapParams: true }));
 server.use(restifyPlugins.acceptParser(server.acceptable));
 server.use(restifyPlugins.queryParser({ mapParams: true }));
