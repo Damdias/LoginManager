@@ -1,6 +1,7 @@
 let errors = require("restify-errors");
 let User = require("../models/User");
 let _ = require("lodash");
+const AuthMiddleware = require("../middleware/AuthMiddleware");
 
 let userRoutes = (server) => {
     server.post('/Users', (req, res, next) => {
@@ -35,7 +36,7 @@ let userRoutes = (server) => {
         });
 
     });
-    server.get('/Users', (req, res, next) => {
+    server.get('/Users',AuthMiddleware, (req, res, next) => {
         User.find().then((users) => {
             res.send(users);
             next();

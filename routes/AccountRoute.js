@@ -61,7 +61,7 @@ let accountRoutes = (server) => {
             );
         })
     });
-    server.put('/Approve', (req, res, next) => {
+    server.put('/Approve',AuthMiddleware, (req, res, next) => {
         if (!req.is('application/json')) {
             return next(
                 new errors.InvalidContentError("Expects 'applicaiton/json'")

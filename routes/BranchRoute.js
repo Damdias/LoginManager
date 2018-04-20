@@ -1,10 +1,10 @@
 let errors = require("restify-errors");
 let Branch = require("../models/BranchModel");
 let _ = require("lodash");
-const Auth = require("../middleware/AuthMiddleware");
+const AuthMiddleware = require("../middleware/AuthMiddleware");
 
 let branchRoutes = (server) => {
-    server.get('/branch/:id', (req, res, next) => {
+    server.get('/branch/:id',AuthMiddleware, (req, res, next) => {
         let branch = new Branch();
         branch.findOne({ _id: req.params.id }, (err, result) => {
             if (err) {
@@ -16,13 +16,13 @@ let branchRoutes = (server) => {
             }
         });
     });
-    server.post('/branch', Auth, (req, res, next) => {
+    server.post('/branch', AuthMiddleware, (req, res, next) => {
         if (!req.is('application/json')) {
             return next(
                 new errors.InvalidContentError("Expects 'applicaiton/json'")
             );
         }
-
+        
         let branch = new Branch(_.pick(req.body, ["branchName", "phoneNo", "address"]));
         branch.save().then(() => {
             res.status(201);
