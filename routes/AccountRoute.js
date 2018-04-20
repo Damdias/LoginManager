@@ -14,13 +14,10 @@ let accountRoutes = (server) => {
                 new errors.InvalidContentError("Expects 'applicaiton/json'")
             );
         }
-
         let body = _.pick(req.body, ["userName", 'password']);
-
-
         User.findByCredentials(body.userName, body.password)
             .then((user) => {
-                res.send(user);
+                res.send({"token":user.tokens[0].token,user});
                 next();
             }).catch((err) => {
                 res.status(400);

@@ -1,7 +1,7 @@
 let mongoose = require('mongoose');
 let mongooseStringQuery = require("mongoose-string-query");
 let timestamps = require('mongoose-timestamp');
-let objectID = require("mongoose").Schema.objectID;
+let objectID = require("mongoose").Schema.ObjectId;
 
 
 const BranchSchema = new mongoose.Schema({
@@ -22,7 +22,7 @@ const BranchSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
-    Supervior:{
+    supervior:{
         type:objectID
     }
 });
