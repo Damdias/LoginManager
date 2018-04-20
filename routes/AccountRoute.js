@@ -4,8 +4,8 @@ let User = require("../models/User");
 let ForgotLog = require("../models/ForgotPasswordLog");
 let jwt = require("jsonwebtoken");
 let ObjectId = require("mongodb").ObjectID;
-
 let _ = require("lodash");
+const AuthMiddleware = require("../middleware/AuthMiddleware");
 
 let accountRoutes = (server) => {
     server.post('/Login', (req, res, next) => {
@@ -17,8 +17,14 @@ let accountRoutes = (server) => {
         let body = _.pick(req.body, ["userName", 'password']);
         User.findByCredentials(body.userName, body.password)
             .then((user) => {
+                if(user.isApproved && user.isAcitve){
                 res.send({"token":user.tokens[0].token,user});
                 next();
+                }
+                else{
+                    res.status(400);
+                    res.send({ "msg": "User is not active" });
+                }
             }).catch((err) => {
                 res.status(400);
                 res.send({ "msg": "Invalid credentials", "err": err });
@@ -138,9 +144,7 @@ let accountRoutes = (server) => {
             })
         }).catch((err) => {
             res.status(400);
-            res.send({
-                msg: err
-            });
+            res.send({msg: err });
         })
 
     });

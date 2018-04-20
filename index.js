@@ -35,14 +35,11 @@ server.use(restifyPlugins.jsonBodyParser({ mapParams: true }));
 server.use(restifyPlugins.acceptParser(server.acceptable));
 server.use(restifyPlugins.queryParser({ mapParams: true }));
 server.use(restifyPlugins.fullResponse());
-server.use((req,res,next)=>{
-    console.log("call middle ware g");
-    next();
-})
+
 
 server.listen(config.port, () => {
     mongoose.Promise = global.Promise;
-    mongoose.connect(config.db.uri);
+    mongoose.connect(config.db.uri, config.db.options);
 
     const db = mongoose.connection;
 
