@@ -41,17 +41,17 @@ server.use(restifyPlugins.fullResponse());
 
 
 server.listen(config.port, () => {
-    // mongoose.Promise = global.Promise;
-    // mongoose.connect(config.db.uri, config.db.options);
+    mongoose.Promise = global.Promise;
+    mongoose.connect(config.db.uri, config.db.options);
 
-    // const db = mongoose.connection;
+    const db = mongoose.connection;
 
-    // db.on('error', (err) => {
-    //     console.error(err);
-    //     process.exit(1);
-    // });
-    // db.once('open', () => {
-    //     routes(server);
-    //     console.log(`Server is listening on port ${config.port}`);
-    // });
+    db.on('error', (err) => {
+        console.error(err);
+        process.exit(1);
+    });
+    db.once('open', () => {
+        routes(server);
+        console.log(`Server is listening on port ${config.port}`);
+    });
 });
