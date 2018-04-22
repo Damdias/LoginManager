@@ -2,7 +2,7 @@ let errors = require("restify-errors");
 let User = require("../models/User");
 let _ = require("lodash");
 const AuthMiddleware = require("../middleware/AuthMiddleware");
-
+const emailService = require("../services/EmailService");
 let userRoutes = (server) => {
     server.post('/Users', (req, res, next) => {
         if (!req.is('application/json')) {
@@ -23,11 +23,14 @@ let userRoutes = (server) => {
         //     res.send(201);
         //     next();
         // });
-        user.save().then(() => {
-            return user.generateAuthToken();
-        }).then((token) => {
-            res.header('x-auth', token);
-            res.send(user);
+        user.save().then((user) => {
+           // return user.generateAuthToken();
+        //}).then((token) => {
+           // res.header('x-auth', token);
+          
+           emailService.SendEmailVerificationEmail(user);
+           res.status(201);
+            res.send({'msg':'User Created success'});
             next();
 
         }).catch((e) => {

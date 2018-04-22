@@ -19,6 +19,7 @@
     "mongoose": "^5.0.14",
     "mongoose-string-query": "^0.2.5",
     "mongoose-timestamp": "^0.6.0",
+    "nodemailer": "^4.6.4",
     "nodemon": "^1.17.3",
     "restify": "^7.1.1",
     "restify-errors": "^6.0.0",

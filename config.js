@@ -10,5 +10,11 @@ module.exports = {
             user:process.env.MONGODB_USER || '',
             pass:process.env.MONGODB_PASSWORD || ''
         }
+    },
+    "email":{
+        "port":587,
+        "host":"smtp.gmail.com",
+        "user":"damdias84@gmail.com",
+        "pass":"#dam12345678$"
     }
 }

@@ -6,6 +6,8 @@ let jwt = require("jsonwebtoken");
 let ObjectId = require("mongodb").ObjectID;
 let _ = require("lodash");
 const AuthMiddleware = require("../middleware/AuthMiddleware");
+const tokenService = require("../services/TokenService");
+const emailService = require("../services/EmailService");
 
 let accountRoutes = (server) => {
     server.post('/Login', (req, res, next) => {
@@ -17,11 +19,11 @@ let accountRoutes = (server) => {
         let body = _.pick(req.body, ["userName", 'password']);
         User.findByCredentials(body.userName, body.password)
             .then((user) => {
-                if(user.isApproved && user.isAcitve){
-                res.send({"token":user.tokens[0].token,user});
-                next();
+                if (user.isApproved && user.isAcitve) {
+                    res.send({ "token": user.tokens[0].token, user });
+                    next();
                 }
-                else{
+                else {
                     res.status(400);
                     res.send({ "msg": "User is not active" });
                 }
@@ -67,7 +69,7 @@ let accountRoutes = (server) => {
             );
         })
     });
-    server.put('/Approve',AuthMiddleware, (req, res, next) => {
+    server.put('/Approve', AuthMiddleware, (req, res, next) => {
         if (!req.is('application/json')) {
             return next(
                 new errors.InvalidContentError("Expects 'applicaiton/json'")
@@ -101,20 +103,20 @@ let accountRoutes = (server) => {
                 new errors.InvalidContentError("Expects 'applicaiton/json'")
             );
         }
-       
+
         let token = null;
         try {
-             token = jwt.verify(req.query.token, 'fogot123');
+            token = jwt.verify(req.query.token, 'fogot123');
         }
         catch (e) {
             res.status(400);
             res.send({ msg: 'Invalid token' });
             next();
         }
-        
+
         let body = _.pick(req.body, ["email", "password"]);
 
-        ForgotLog.findOne({ userId: ObjectId(token._id), isActive:true }).then((log) => {
+        ForgotLog.findOne({ userId: ObjectId(token._id), isActive: true }).then((log) => {
             if (!log) {
                 return next(new errors.InternalServerError("Request token is not valid token"));
             }
@@ -144,7 +146,36 @@ let accountRoutes = (server) => {
             })
         }).catch((err) => {
             res.status(400);
-            res.send({msg: err });
+            res.send({ msg: err });
+        })
+
+    });
+    server.get('/VerifyEmail', (req, res, next) => {
+        if (!req.is('application/json')) {
+            return next(
+                new errors.InvalidContentError("Expects 'applicaiton/json'")
+            );
+        }
+        let body = _.pick(req.query, ["token"]);
+        tokenService.ValidateEmailVeryToken(body.token).then((validtoken) => {
+            User.findOne({ _id: ObjectId(validtoken._id) })
+                .then((user) => {
+                    user.isEmailVerified = true;
+                    user.save();
+                    res.send({msg:'email verification is successed'})
+                    next();
+                }).catch((err) => {
+                    res.status(400);
+                    res.send({ "msg": "Can't find user", "err": err });
+                    next();
+                });
+
+
+        }).catch((e) => {
+            console.log("error ", e);
+            res.status(400);
+            res.send({ msg: 'Invalid token' });
+            next();
         })
 
     });
