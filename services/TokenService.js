@@ -6,10 +6,8 @@ module.exports.EmailVeryToken = (userId) => {
 }
 module.exports.ValidateEmailVeryToken = (token) => {
     return new Promise((resolve, reject) => {
-        console.log('verify');
         try {
             token = jwt.verify(token, EmailSecret);
-            console.log('tokenv', token);
             resolve(token);
         }
         catch (e) {
