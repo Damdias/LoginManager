@@ -27,7 +27,7 @@ let userRoutes = (server) => {
             // return user.generateAuthToken();
             //}).then((token) => {
             // res.header('x-auth', token);
-
+            console.log("send mail");
             emailService.SendEmailVerificationEmail(user);
             res.status(201);
             res.send({ 'msg': 'User Created success' });

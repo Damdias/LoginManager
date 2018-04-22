@@ -17,6 +17,7 @@ class EmailService {
         this.transporter = nodemailer.createTransport({
             port: emailConfigs.port,
             host: emailConfigs.host,
+            secure: true,
             auth: {
                 type: this.LoginType,
                 user: emailConfigs.user,
@@ -32,6 +33,8 @@ class EmailService {
     Send(mailOption, done) {
         mailOption["from"] = `PN Team <${emailConfigs.user}`;
         this.transporter.sendMail(mailOption, (err, info) => {
+            console.log("send email error ", err);
+            console.log("send email info ", info);
             done(err, info);
         });
 
