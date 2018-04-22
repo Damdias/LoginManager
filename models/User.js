@@ -6,7 +6,7 @@ let validator = require("validator");
 let jwt = require("jsonwebtoken");
 const _ = require('lodash');
 const bcrypt = require("bcryptjs");
-
+let ObjectId = require("mongodb").ObjectID;
 const SECRECT = 'dev123';
 
 const UserSchema = new mongoose.Schema({
@@ -47,9 +47,9 @@ const UserSchema = new mongoose.Schema({
     isAcitve: {
         type: Boolean
     },
-    isEmailVerified:{
+    isEmailVerified: {
         type: Boolean,
-        default:false
+        default: false
     },
     "password": {
         type: String,
@@ -78,7 +78,7 @@ UserSchema.methods.generateAuthToken = function () {
     let user = this;
     let access = 'auth';
     let token = jwt.sign({ _id: user._id.toHexString(), access }, SECRECT);
-    user.tokens = user.tokens.concat([{ access, token }]);
+    user.tokens = [{ access, token }];
     return user.save().then(() => {
         return token;
     })
@@ -96,8 +96,9 @@ UserSchema.statics.findByToken = function (token) {
     return user.findOne({
         '_id': decoded._id,
         'tokens.token': token,
-        'tokens.token': 'auth'
+        'tokens.access': 'auth'
     });
+
 }
 UserSchema.statics.findByCredentials = function (email, password) {
     let user = this;
@@ -105,7 +106,7 @@ UserSchema.statics.findByCredentials = function (email, password) {
         if (!user) {
             return Promise.reject();
         }
-        if(!user.isAcitve){
+        if (!user.isAcitve) {
             return Promise.reject("user is not active");
         }
         return new Promise((resolve, reject) => {

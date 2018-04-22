@@ -19,13 +19,25 @@ let accountRoutes = (server) => {
         let body = _.pick(req.body, ["userName", 'password']);
         User.findByCredentials(body.userName, body.password)
             .then((user) => {
+                if (!user.isEmailVerified) {
+                    res.status(400);
+                    res.send({ msg: 'Please veryfly email ' });
+                    next();
+                }
                 if (user.isApproved && user.isAcitve) {
+                    user.generateAuthToken()
                     res.send({ "token": user.tokens[0].token, user });
                     next();
                 }
                 else {
                     res.status(400);
-                    res.send({ "msg": "User is not active" });
+                    if (!user.isApproved) {
+                        res.send({ "msg": "User is not Approved" });
+                    }
+                    else {
+                        res.send({ "msg": "User is not active" });
+                    }
+
                 }
             }).catch((err) => {
                 res.status(400);
@@ -77,7 +89,12 @@ let accountRoutes = (server) => {
         }
 
         let body = _.pick(req.body, ["email"]);
-
+        if(req.body.authUser.userType !== "Supervisor"){
+                res.status(400);
+                res.send({msg:'User do not have required permission'});
+                next();
+                return;
+        }
 
         User.findOne({ email: body.email }).then((user) => {
             if (!user) {
@@ -151,18 +168,14 @@ let accountRoutes = (server) => {
 
     });
     server.get('/VerifyEmail', (req, res, next) => {
-        if (!req.is('application/json')) {
-            return next(
-                new errors.InvalidContentError("Expects 'applicaiton/json'")
-            );
-        }
+
         let body = _.pick(req.query, ["token"]);
         tokenService.ValidateEmailVeryToken(body.token).then((validtoken) => {
             User.findOne({ _id: ObjectId(validtoken._id) })
                 .then((user) => {
                     user.isEmailVerified = true;
                     user.save();
-                    res.send({msg:'email verification is successed'})
+                    res.send({ msg: 'email verification is successed' })
                     next();
                 }).catch((err) => {
                     res.status(400);

@@ -24,13 +24,13 @@ let userRoutes = (server) => {
         //     next();
         // });
         user.save().then((user) => {
-           // return user.generateAuthToken();
-        //}).then((token) => {
-           // res.header('x-auth', token);
-          
-           emailService.SendEmailVerificationEmail(user);
-           res.status(201);
-            res.send({'msg':'User Created success'});
+            // return user.generateAuthToken();
+            //}).then((token) => {
+            // res.header('x-auth', token);
+
+            emailService.SendEmailVerificationEmail(user);
+            res.status(201);
+            res.send({ 'msg': 'User Created success' });
             next();
 
         }).catch((e) => {
@@ -39,7 +39,7 @@ let userRoutes = (server) => {
         });
 
     });
-    server.get('/Users',AuthMiddleware, (req, res, next) => {
+    server.get('/Users', AuthMiddleware, (req, res, next) => {
         User.find().then((users) => {
             res.send(users);
             next();
