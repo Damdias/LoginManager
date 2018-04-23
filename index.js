@@ -25,6 +25,16 @@ let restify = require('restify');
 let mongoose = require('mongoose');
 let restifyPlugins = require('restify-plugins');
 let routes = require("./routes/index");
+const corsMiddleware = require('restify-cors-middleware');
+
+const cors = corsMiddleware({
+    preflightMaxAge: 5, //Optional
+    origins: ['https://pnfmweb.azurewebsites.net', 'http://localhost'],
+    allowHeaders: ['API-Token','x-auth'],
+    exposeHeaders: ['API-Token-Expiry']
+  })
+  
+
 
 const server = restify.createServer({
     name: config.name,
@@ -34,11 +44,9 @@ server.get("/",(req,res,next)=>{
     res.send({"msg":"Server is working"});
     next();
 })
-server.use(function crossOrigin(req,res,next){
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    return next();
-  });
+server.pre(cors.preflight)
+server.use(cors.actual)
+
 server.use(restifyPlugins.jsonBodyParser({ mapParams: true }));
 server.use(restifyPlugins.acceptParser(server.acceptable));
 server.use(restifyPlugins.queryParser({ mapParams: true }));
