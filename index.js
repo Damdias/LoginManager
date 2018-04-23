@@ -29,7 +29,7 @@ const corsMiddleware = require('restify-cors-middleware');
 
 const cors = corsMiddleware({
     preflightMaxAge: 5, //Optional
-    origins: ['https://pnfmweb.azurewebsites.net', 'http://localhost'],
+    origins: ['https://pnfmweb.azurewebsites.net', 'http://localhost:3000'],
     allowHeaders: ['API-Token','x-auth'],
     exposeHeaders: ['API-Token-Expiry']
   })
