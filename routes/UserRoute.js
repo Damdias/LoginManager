@@ -28,7 +28,7 @@ let userRoutes = (server) => {
             //}).then((token) => {
             // res.header('x-auth', token);
             console.log("send mail");
-           // emailService.SendEmailVerificationEmail(user);
+            // emailService.SendEmailVerificationEmail(user);
             res.status(201);
             res.send({ 'msg': 'User Created success' });
             next();
@@ -41,7 +41,22 @@ let userRoutes = (server) => {
     });
     server.get('/Users', AuthMiddleware, (req, res, next) => {
         User.find().then((users) => {
-            res.send(users);
+            let newusers = users.map((u) => {
+                return {
+                    userName: u.userName,
+                    firstName: u.firstName,
+                    lastName: u.lastName,
+                    phoneNo: u.phoneNo,
+                    email: u.email,
+                    id: u._id,
+                    userType: u.userType,
+                    isApproved: u.isApproved,
+                    isAcitve: u.isAcitve,
+                    isEmailVerified: u.isEmailVerified
+                }
+            });
+
+            res.send(newusers);
             next();
         }).catch((err) => {
             return next(new errors.InternalError(err));

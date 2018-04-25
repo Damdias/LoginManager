@@ -7,13 +7,17 @@ const Auth = (req, res, next) => {
                 res.status(400);
                 return res.send(new errors.InternalError("can't find x-auth token"));
         }
+
         User.findByToken(authtoken).then((user) => {
+                if (req.body === undefined) {
+                        req.body = {};
+                }
                 req.body.authUser = user;
-               next();
+                next();
         }).catch((e) => {
-                console.log('Auth middleware error',e);
+                console.log('Auth middleware error', e);
                 res.status(400);
-                return res.send({ "msg": "Invalid token",err:e });
+                return res.send({ "msg": "Invalid token", err: e });
         });
 
 }
