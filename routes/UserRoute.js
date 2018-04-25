@@ -55,7 +55,6 @@ let userRoutes = (server) => {
                     isEmailVerified: u.isEmailVerified
                 }
             });
-
             res.send(newusers);
             next();
         }).catch((err) => {
