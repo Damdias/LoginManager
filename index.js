@@ -1,23 +1,3 @@
-// let restify = require('restify');
-// let bunyan = require("bunyan");
-
-
-// let respond = (req,res,next)=>{
-//     res.send('hello '+req.params.name);
-//     next();
-// }
-
-// const server = restify.createServer({
-//     log:bunyan.createLogger({
-//         name:'myapp'
-//     })
-// });
-// server.get('/hello/:name',respond);
-// server.head('/hello/:name',respond);
-
-// server.listen(8080,()=>{
-//     console.log('%s listening at %s', server.name,server.url);
-// })
 
 let config = require("./config");
 let restify = require('restify');

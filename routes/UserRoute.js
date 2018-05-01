@@ -5,15 +5,17 @@ const AuthMiddleware = require("../middleware/AuthMiddleware");
 const emailService = require("../services/EmailService");
 let userRoutes = (server) => {
     server.post('/Users', (req, res, next) => {
+        
         if (!req.is('application/json')) {
             return next(
-                new errors.InvalidContentError("Expects 'applicaiton/json'")
+                new errors.InvalidContentError("Expects 'application/json'")
             );
         }
 
         let user = new User(_.pick(req.body, ["userName", 'email', 'firstName', 'lastName', 'phoneNo', 'userType', 'password']));
         user.isAcitve = false;
         user.isApproved = false;
+        user.password = user.password || '1234$'
         // user.save((err) => {
         //     if (err) {
         //         console.err(err);
