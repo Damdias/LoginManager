@@ -17,7 +17,7 @@ let cityRoutes = (server) => {
         });
     });
     server.get('/cities', AuthMiddleware, (req, res, next) => {
-
+           
         City.find().then((result) => {
             res.send(result);
             next();
