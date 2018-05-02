@@ -23,7 +23,21 @@ const BranchSchema = new mongoose.Schema({
         trim: true
     },
     supervior:{
+        type: String,
+
+    },
+    superviorId:{
         type:objectID
+    },
+    city:{
+        type:String,
+        require:true,
+
+    },
+    cityId:{
+        type:objectID,
+        require:true,
+
     }
 });
 

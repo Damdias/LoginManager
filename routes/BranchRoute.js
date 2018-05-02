@@ -26,15 +26,16 @@ let branchRoutes = (server) => {
             res.send({ msg: 'Cant find Branches', err });
             return next();
         });
+        
     });
     server.post('/branch', AuthMiddleware, (req, res, next) => {
         if (!req.is('application/json')) {
             return next(
-                new errors.InvalidContentError("Expects 'applicaiton/json'")
+                new errors.InvalidContentError("Expects 'application/json'")
             );
         }
 
-        let branch = new Branch(_.pick(req.body, ["branchName", "phoneNo", "address"]));
+        let branch = new Branch(_.pick(req.body, ["branchName", "phoneNo", "address",'city','cityId']));
         branch.save().then(() => {
             res.status(201);
             res.send({ msg: 'Branch create success' });
