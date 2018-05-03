@@ -64,5 +64,29 @@ let userRoutes = (server) => {
         })
 
     });
+    server.get('/Users/byType/:type', AuthMiddleware, (req, res, next) => {
+        let paruserType = req.params.type;
+        User.find({$and:[{userType:{$eq:paruserType}},{isAcitve:{$exists:true}}]}).then((users) => {
+            let newusers = users.map((u) => {
+                return {
+                    userName: u.userName,
+                    firstName: u.firstName,
+                    lastName: u.lastName,
+                    phoneNo: u.phoneNo,
+                    email: u.email,
+                    id: u._id,
+                    userType: u.userType,
+                    isApproved: u.isApproved,
+                    isAcitve: u.isAcitve,
+                    isEmailVerified: u.isEmailVerified
+                }
+            });
+            res.send(newusers);
+            next();
+        }).catch((err) => {
+            return next(new errors.InternalError(err));
+        })
+
+    });
 }
 module.exports = userRoutes;

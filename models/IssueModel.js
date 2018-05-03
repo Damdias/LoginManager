@@ -4,24 +4,34 @@ let timestamps = require('mongoose-timestamp');
 let ObjectID = require("mongoose").Schema.ObjectID;
 
 const IssueSchema = new mongoose.Schema({
-    IssueName: {
+    issueName: {
         type: String,
         unique: true,
         trim: true,
         minlength: 1,
         required: true
     },
-    
-    Description: {
+    description: {
         type: String
     },
-    Branch:{
+    branchId:{
         type:ObjectID,
         required:true
     },
-    CreatedBy:{
+    branchName:{
         type:ObjectID,
         required:true
+    },
+    CreatedId:{
+        type:ObjectID,
+        required:true
+    },
+    CreatedByName:{
+        type:ObjectID,
+        required:true
+    },
+    images:{
+        type:Array
     },
     Status:{
         type: String,

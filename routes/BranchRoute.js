@@ -35,7 +35,7 @@ let branchRoutes = (server) => {
             );
         }
 
-        let branch = new Branch(_.pick(req.body, ["branchName", "phoneNo", "address",'city','cityId']));
+        let branch = new Branch(_.pick(req.body, ["branchName", "phoneNo", "address",'city','cityId',"superviorId","supervior"]));
         branch.save().then(() => {
             res.status(201);
             res.send({ msg: 'Branch create success' });
