@@ -41,7 +41,10 @@ class EmailService {
     }
     SendEmailVerificationEmail(user) {
         let token = tokenService.EmailVeryToken(user._id);
-        this.Send(emailTemplate.singupEmail(user.email, token));
+        this.Send(emailTemplate.singupEmail(user.email, token),(err,info)=>{
+            console.log("err", err);
+            console.log('info ',info);
+        });
 
     }
 }

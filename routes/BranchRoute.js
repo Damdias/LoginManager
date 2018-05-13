@@ -26,7 +26,7 @@ let branchRoutes = (server) => {
             res.send({ msg: 'Cant find Branches', err });
             return next();
         });
-        
+
     });
     server.post('/branch', AuthMiddleware, (req, res, next) => {
         if (!req.is('application/json')) {
@@ -35,10 +35,37 @@ let branchRoutes = (server) => {
             );
         }
 
-        let branch = new Branch(_.pick(req.body, ["branchName", "phoneNo", "address",'city','cityId',"superviorId","supervior"]));
+        let branch = new Branch(_.pick(req.body, ["branchName", "phoneNo", "address", 'city', 'cityId', "superviorId", "supervior"]));
         branch.save().then(() => {
             res.status(201);
             res.send({ msg: 'Branch create success' });
+            next();
+        }).catch((err) => {
+            return next(new errors.InternalServerError(err));
+        })
+    });
+    server.put('/branch', AuthMiddleware, (req, res, next) => {
+        if (!req.is('application/json')) {
+            return next(
+                new errors.InvalidContentError("Expects 'application/json'")
+            );
+        }
+
+        let branch = new Branch(_.pick(req.body, ["_id","branchName", "phoneNo", "address", 'city', 'cityId', "superviorId", "supervior"]));
+        branch.update().then(() => {
+            res.status(201);
+            res.send({ msg: 'Branch create success' });
+            next();
+        }).catch((err) => {
+            return next(new errors.InternalServerError(err));
+        })
+    });
+    server.del('/branch/:id', AuthMiddleware, (req, res, next) => {
+        
+        let branchid = req.params.id;
+        Branch.remove({ "_id": branchid }).then(() => {
+            res.status(201);
+            res.send({ msg: 'Remove branch success' });
             next();
         }).catch((err) => {
             return next(new errors.InternalServerError(err));
