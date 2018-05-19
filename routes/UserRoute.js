@@ -5,7 +5,7 @@ const AuthMiddleware = require("../middleware/AuthMiddleware");
 const emailService = require("../services/EmailService");
 let userRoutes = (server) => {
     server.post('/Users', (req, res, next) => {
-        
+
         if (!req.is('application/json')) {
             return next(
                 new errors.InvalidContentError("Expects 'application/json'")
@@ -66,7 +66,7 @@ let userRoutes = (server) => {
     });
     server.get('/Users/byType/:type', AuthMiddleware, (req, res, next) => {
         let paruserType = req.params.type;
-        User.find({$and:[{userType:{$eq:paruserType}},{isAcitve:{$exists:true}}]}).then((users) => {
+        User.find({ $and: [{ userType: { $eq: paruserType } }, { isAcitve: { $exists: true } }] }).then((users) => {
             let newusers = users.map((u) => {
                 return {
                     userName: u.userName,
@@ -87,6 +87,41 @@ let userRoutes = (server) => {
             return next(new errors.InternalError(err));
         })
 
+    });
+    server.put('/Users', AuthMiddleware, (req, res, next) => {
+        if (!req.is('application/json')) {
+            return next(
+                new errors.InvalidContentError("Expects 'applicaiton/json'")
+            );
+        }
+
+        let body = _.pick(req.body, ["id", "userType", "userName", "description", "phoneNo", "email"]);
+        if (req.body.authUser.userType !== "Supervisor") {
+            res.status(400);
+            res.send({ msg: 'User do not have required permission' });
+            next();
+            return;
+        }
+
+        User.findOne({ _id: body.id }).then((user) => {
+            if (!user) {
+                return next(new errors.InvalidArgumentError("Can't find user"))
+            }
+
+            user.userName = body.userName;
+            user.phoneNo = body.phoneNo;
+            user.email = body.email;
+            user.userType = body.userType;
+            user.save();
+            res.send(user);
+            next();
+
+
+        }).catch((e) => {
+            return next(
+                new errors.InternalError(e.message)
+            );
+        })
     });
 }
 module.exports = userRoutes;

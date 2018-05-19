@@ -22,11 +22,11 @@ const BranchSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
-    supervior:{
+    supervisor:{
         type: String,
 
     },
-    superviorId:{
+    supervisorId:{
         type:objectID
     },
     city:{

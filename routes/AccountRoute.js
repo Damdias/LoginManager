@@ -22,12 +22,12 @@ let accountRoutes = (server) => {
                 if (!user.isEmailVerified) {
                     res.status(400);
                     res.send({ msg: 'Please veryfly email ' });
-                    next();
+                   return next();
                 }
                 if (user.isApproved && user.isAcitve) {
                     user.generateAuthToken()
                     res.send({ "token": user.tokens[0].token, user });
-                    next();
+                   return next();
                 }
                 else {
                     res.status(400);
@@ -37,12 +37,13 @@ let accountRoutes = (server) => {
                     else {
                         res.send({ "msg": "User is not active" });
                     }
+                    return next();
 
                 }
             }).catch((err) => {
                 res.status(400);
                 res.send({ "msg": "Invalid credentials", "err": err });
-                next();
+               return next();
             });
 
     });
@@ -103,6 +104,38 @@ let accountRoutes = (server) => {
 
             user.isAcitve = true;
             user.isApproved = true;
+            user.save();
+            res.send(user);
+            next();
+
+
+        }).catch((e) => {
+            return next(
+                new errors.InternalError(e.message)
+            );
+        })
+    });
+    server.put('/activate', AuthMiddleware, (req, res, next) => {
+        if (!req.is('application/json')) {
+            return next(
+                new errors.InvalidContentError("Expects 'applicaiton/json'")
+            );
+        }
+
+        let body = _.pick(req.body, ["id","active"]);
+        if(req.body.authUser.userType !== "Supervisor"){
+                res.status(400);
+                res.send({msg:'User do not have required permission'});
+                next();
+                return;
+        }
+
+        User.findOne({ _id: body.id }).then((user) => {
+            if (!user) {
+                return next(new errors.InvalidArgumentError("Can't find user"))
+            }
+
+            user.isAcitve = body.active;
             user.save();
             res.send(user);
             next();
