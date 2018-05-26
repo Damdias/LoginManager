@@ -16,5 +16,10 @@ module.exports = {
         "host":"smtp.gmail.com",
         "user":"damdias84@gmail.com",
         "pass":"#dam12345678$"
+    },
+    aws:{
+        accessKeyId:"AKIAJWPDJZHSESJZMH2Q",
+        secretAccessKey:"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",
+        Bucket:'bsfm-files/isssueImages'
     }
 }

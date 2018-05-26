@@ -4,7 +4,7 @@ let timestamps = require('mongoose-timestamp');
 let ObjectID = require("mongoose").Schema.ObjectID;
 
 const IssueSchema = new mongoose.Schema({
-    issueName: {
+    title: {
         type: String,
         unique: true,
         trim: true,
@@ -27,6 +27,14 @@ const IssueSchema = new mongoose.Schema({
         required:true
     },
     CreatedByName:{
+        type:ObjectID,
+        required:true
+    },
+    AssignToUserId:{
+        type:ObjectID,
+        required:true
+    },
+    AssignToUserName:{
         type:ObjectID,
         required:true
     },

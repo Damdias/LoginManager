@@ -27,10 +27,13 @@ server.get("/",(req,res,next)=>{
 server.pre(cors.preflight)
 server.use(cors.actual)
 
+server.use(restify.plugins.acceptParser(server.acceptable));
+server.use(restify.plugins.bodyParser());
 server.use(restifyPlugins.jsonBodyParser({ mapParams: true }));
 server.use(restifyPlugins.acceptParser(server.acceptable));
 server.use(restifyPlugins.queryParser({ mapParams: true }));
 server.use(restifyPlugins.fullResponse());
+//server.use(restifyPlugins.multipartBodyParser());
 
 
 server.listen(config.port, () => {

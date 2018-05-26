@@ -54,10 +54,7 @@ let accountRoutes = (server) => {
                 new errors.InvalidContentError("Expects 'applicaiton/json'")
             );
         }
-
         let body = _.pick(req.body, ["email"]);
-
-
         User.findOne({ email: body.email }).then((user) => {
             if (!user) {
                 return next(new errors.InvalidArgumentError("Invalid user Name"))
@@ -74,8 +71,6 @@ let accountRoutes = (server) => {
             user.save();
             res.send(user);
             next();
-
-
         }).catch((e) => {
             return next(
                 new errors.InternalError(e.message)
