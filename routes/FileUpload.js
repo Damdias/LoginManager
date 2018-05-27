@@ -27,7 +27,6 @@ let fileUploadRoute = (server) => {
                 console.error("File upload error ", err)
                 return res.send({ msg: "error occure", err });
             }
-
             res.send({ msg: 'file upload success', location: data.Location });
 
         });

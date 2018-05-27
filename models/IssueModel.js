@@ -1,41 +1,43 @@
 let mongoose = require('mongoose');
 let mongooseStringQuery = require("mongoose-string-query");
 let timestamps = require('mongoose-timestamp');
-let ObjectID = require("mongoose").Schema.ObjectID;
+let objectID = require("mongoose").Schema.ObjectId;
 
 const IssueSchema = new mongoose.Schema({
     title: {
         type: String,
-        unique: true,
         trim: true,
         minlength: 1,
         required: true
     },
     description: {
-        type: String
+        type: String,
+        trim: true,
+        minlength: 1,
+        required: true
     },
     branchId:{
-        type:ObjectID,
+        type:objectID,
         required:true
     },
     branchName:{
-        type:ObjectID,
+        type:String,
         required:true
     },
     CreatedId:{
-        type:ObjectID,
+        type:objectID,
         required:true
     },
     CreatedByName:{
-        type:ObjectID,
+        type:String,
         required:true
     },
     AssignToUserId:{
-        type:ObjectID,
+        type:objectID,
         required:true
     },
     AssignToUserName:{
-        type:ObjectID,
+        type:String,
         required:true
     },
     images:{

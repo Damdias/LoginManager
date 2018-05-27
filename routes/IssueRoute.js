@@ -1,5 +1,4 @@
 let errors = require("restify-errors");
-let User = require("../models/User");
 const Issue = require("../models/IssueModel");
 let _ = require("lodash");
 const AuthMiddleware = require("../middleware/AuthMiddleware");
@@ -13,8 +12,9 @@ let issueRoutes = (server) => {
             );
         }
 
-        let issue = new Issue(_.pick(req.body, ["issueName", 'description', 'branchId', 'branchName', 'CreatedId', 'CreatedByName']));
+        let issue = new Issue(_.pick(req.body, ["title", 'description', 'branchId', 'branchName', 'CreatedId', 'CreatedByName','AssignToUserId','AssignToUserName','images','Status']));
 
+        console.log("create issue");
         issue.save().then((user) => {
             res.status(201);
             res.send({ 'msg': 'User Created success' });
@@ -27,22 +27,8 @@ let issueRoutes = (server) => {
 
     });
     server.get('/issues', AuthMiddleware, (req, res, next) => {
-        User.find().then((users) => {
-            let newusers = users.map((u) => {
-                return {
-                    userName: u.userName,
-                    firstName: u.firstName,
-                    lastName: u.lastName,
-                    phoneNo: u.phoneNo,
-                    email: u.email,
-                    id: u._id,
-                    userType: u.userType,
-                    isApproved: u.isApproved,
-                    isAcitve: u.isAcitve,
-                    isEmailVerified: u.isEmailVerified
-                }
-            });
-            res.send(newusers);
+        Issue.find().then((issues) => {
+            res.send(issues);
             next();
         }).catch((err) => {
             return next(new errors.InternalError(err));
