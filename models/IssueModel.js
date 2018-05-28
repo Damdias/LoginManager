@@ -16,6 +16,10 @@ const IssueSchema = new mongoose.Schema({
         minlength: 1,
         required: true
     },
+    IssueType:{
+        type:String,
+        required:true
+    },
     branchId:{
         type:objectID,
         required:true

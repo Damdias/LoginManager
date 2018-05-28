@@ -12,9 +12,10 @@ let issueRoutes = (server) => {
             );
         }
 
-        let issue = new Issue(_.pick(req.body, ["title", 'description', 'branchId', 'branchName', 'CreatedId', 'CreatedByName','AssignToUserId','AssignToUserName','images','Status']));
+        let issue = new Issue(_.pick(req.body, ["title", 'description', 'branchId', 'branchName',
+         'CreatedId', 'CreatedByName','AssignToUserId','AssignToUserName','images','Status',"IssueType"]));
 
-        console.log("create issue");
+        console.log("create issue",);
         issue.save().then((user) => {
             res.status(201);
             res.send({ 'msg': 'User Created success' });
