@@ -1,6 +1,6 @@
 const config = require("../config");
 module.exports.singupEmail = (username,token)=>{
-    let tokenlink = `${config.base_url}/VerifyEmail?token=${token}`;
+    let tokenlink = `${config.base_url}/auth/emailVerify/${token}`;
     let mailOptins = {
         to: username,
         subject: 'Welcome' ,
